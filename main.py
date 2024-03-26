@@ -69,6 +69,16 @@ if __name__ == '__main__':
     selected_user = st.selectbox('유저 선택:', user_list)
 
     profit_or_lost_result = get_user_filtered_results(df, selected_user)
+    # 인덱스를 1부터 시작하도록 조정
+    profit_or_lost_result.index = np.arange(1, len(profit_or_lost_result) + 1)
+
+    # 'order_id' 컬럼 제거
+    profit_or_lost_result = profit_or_lost_result.drop(columns=['order_id'])
+    print(profit_or_lost_result)
+
+    # 이제 DataFrame을 Streamlit에 표시
+    st.dataframe(profit_or_lost_result, use_container_width=True)
+
     st.dataframe(profit_or_lost_result, use_container_width=True)
 
     # 시간 범위 계산 및 표시는 사용자 선택에 따른 데이터로부터 수행
