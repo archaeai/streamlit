@@ -72,6 +72,6 @@ if __name__ == '__main__':
     st.dataframe(profit_or_lost_result, use_container_width=True)
 
     # 시간 범위 계산 및 표시는 사용자 선택에 따른 데이터로부터 수행
-    start_timestamp = profit_or_lost_result['timestamp'].min()
-    end_timestamp = profit_or_lost_result['timestamp'].max()
+    start_timestamp = df['timestamp'].min()
+    end_timestamp = df['timestamp'].max()
     st.write(f"{selected_user} 데이터 시간 범위: {start_timestamp} 부터 {end_timestamp} 까지")
