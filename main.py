@@ -3,17 +3,11 @@ import pandas as pd
 import numpy as np
 
 
-
-# DataFrame 생성
-json_file_path = 'test.json'
-df = pd.read_json(json_file_path, lines=True)
-df['timestamp'] = pd.to_datetime(df['timestamp'])
-
-# 시작 및 종료 timestamp 계산
-start_timestamp = df['timestamp'].min()
-end_timestamp = df['timestamp'].max()
-# 사용자 목록 생성 (중복 제거)
-user_list = df['user_id'].unique()
+def load_and_preprocess_data(filepath):
+    """데이터 로드 및 전처리를 수행하는 함수."""
+    df = pd.read_json(filepath, lines=True)
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+    return df
 
 
 def determine_profit_loss(group):
@@ -40,17 +34,9 @@ def determine_profit_loss(group):
     return 'unknown'  # 'open' 또는 'close' 주문이 누락된 경우
 
 
-# split 주문 분석
 def split_order_analysis(group, split_status, split_type):
     return len(group[(group['order_type'] == 'split') & (group['open_or_close'] == split_status) & (
-                group['split_type'] == split_type)])
-
-
-# orderId를 입력으로 받아 해당 orderId만 필터링하여 반환하는 함수
-
-def filter_df(_df, key, filter_value):
-    filtered_df = _df[_df[key] == filter_value]
-    return filtered_df
+            group['split_type'] == split_type)])
 
 
 def aggregate_results(group):
@@ -65,20 +51,27 @@ def aggregate_results(group):
     })
 
 
-# apply 함수를 사용할 때 include_groups=False를 추가하거나 경고를 무시
-results = df.groupby('order_id').apply(aggregate_results, include_groups=False).reset_index()
-profit_or_lost_result = results[(results["profit_loss"] == "loss") | (results["profit_loss"] == "profit")]
+def get_user_filtered_results(df, user_id):
+    """선택된 사용자의 데이터를 필터링하고 결과를 반환하는 함수."""
+    filtered_df = df[df['user_id'] == user_id]
+    results = filtered_df.groupby('order_id').apply(aggregate_results, include_groups=False).reset_index()
+    return results[(results["profit_loss"] == "loss") | (results["profit_loss"] == "profit")]
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     st.title('Bot 2 청산된 주문 분석')
-    # Streamlit selectbox를 사용하여 유저 선택
-    selected_user = st.selectbox('유저 선택:', user_list)
-    # 선택된 유저에 해당하는 데이터만 필터링
-    df = df[df['user_id'] == selected_user]
-    # apply 함수를 사용할 때 include_groups=False를 추가하거나 경고를 무시
-    results = df.groupby('order_id').apply(aggregate_results, include_groups=False).reset_index()
-    profit_or_lost_result = results[(results["profit_loss"] == "loss") | (results["profit_loss"] == "profit")]
 
+    # 데이터 로드 및 전처리
+    json_file_path = 'test.json'
+    df = load_and_preprocess_data(json_file_path)
+
+    user_list = df['user_id'].unique()
+    selected_user = st.selectbox('유저 선택:', user_list)
+
+    profit_or_lost_result = get_user_filtered_results(df, selected_user)
     st.dataframe(profit_or_lost_result, use_container_width=True)
-    # 시간 범위 표시
-    st.write(f"데이터 시간 범위: {start_timestamp} 부터 {end_timestamp} 까지")
+
+    # 시간 범위 계산 및 표시는 사용자 선택에 따른 데이터로부터 수행
+    start_timestamp = profit_or_lost_result['timestamp'].min()
+    end_timestamp = profit_or_lost_result['timestamp'].max()
+    st.write(f"{selected_user} 데이터 시간 범위: {start_timestamp} 부터 {end_timestamp} 까지")
