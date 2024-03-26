@@ -78,7 +78,7 @@ if __name__=='__main__':
     # apply 함수를 사용할 때 include_groups=False를 추가하거나 경고를 무시
     results = df.groupby('order_id').apply(aggregate_results, include_groups=False).reset_index()
     profit_or_lost_result = results[(results["profit_loss"] == "loss") | (results["profit_loss"] == "profit")]
-    
+
     st.dataframe(profit_or_lost_result, use_container_width=True)
     # 시간 범위 표시
     st.write(f"데이터 시간 범위: {start_timestamp} 부터 {end_timestamp} 까지")
