@@ -64,24 +64,28 @@ if __name__ == '__main__':
     # 데이터 로드 및 전처리
     json_file_path = 'test.json'
     df = load_and_preprocess_data(json_file_path)
-
+    # 유저 리스트 가져오기
     user_list = df['user_id'].unique()
     selected_user = st.selectbox('유저 선택:', user_list)
 
+    # 시간 가져오기
+    start_timestamp = df['timestamp'].min()
+    end_timestamp = df['timestamp'].max()
+
+    # 분단위 까지만
+    formatted_start = start_timestamp.strftime('%Y-%m-%d %H:%M')
+    formatted_end = end_timestamp.strftime('%Y-%m-%d %H:%M')
+    st.write(f"{selected_user} 데이터 시간 범위: {formatted_start} 부터 {formatted_end} 까지")
+
+    # dateframe 가져오기
     profit_or_lost_result = get_user_filtered_results(df, selected_user)
+
     # 인덱스를 1부터 시작하도록 조정
     profit_or_lost_result.index = np.arange(1, len(profit_or_lost_result) + 1)
 
     # 'order_id' 컬럼 제거
     profit_or_lost_result = profit_or_lost_result.drop(columns=['order_id'])
-    print(profit_or_lost_result)
 
     # 이제 DataFrame을 Streamlit에 표시
     st.dataframe(profit_or_lost_result, use_container_width=True)
 
-    st.dataframe(profit_or_lost_result, use_container_width=True)
-
-    # 시간 범위 계산 및 표시는 사용자 선택에 따른 데이터로부터 수행
-    start_timestamp = df['timestamp'].min()
-    end_timestamp = df['timestamp'].max()
-    st.write(f"{selected_user} 데이터 시간 범위: {start_timestamp} 부터 {end_timestamp} 까지")
