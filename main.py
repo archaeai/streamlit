@@ -41,9 +41,11 @@ def split_order_analysis(group, split_status, split_type):
 
 def aggregate_results(group):
     return pd.Series({
+        'entry_time': group['timestamp'].iloc[0],
         'symbol': group['symbol'].iloc[0],  # 첫 번째 symbol 값
         'position': group['position'].iloc[0],  # 첫 번째 position 값
         'profit_loss': determine_profit_loss(group),
+        'pnl_qty': group['quantity'].iloc[-1],
         'split_open_water': split_order_analysis(group, 'open', 'water'),
         'split_close_water': split_order_analysis(group, 'close', 'water'),
         'split_open_bull': split_order_analysis(group, 'open', 'bull'),
@@ -86,4 +88,3 @@ if __name__ == '__main__':
 
     # 이제 DataFrame을 Streamlit에 표시
     st.dataframe(profit_or_lost_result, use_container_width=True)
-
