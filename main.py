@@ -83,7 +83,7 @@ if __name__ == '__main__':
 
     # 인덱스를 1부터 시작하도록 조정
     profit_or_lost_result.index = np.arange(1, len(profit_or_lost_result) + 1)
-
+    st.dataframe(profit_or_lost_result)
     # profit_or_lost_result 표시
     for index, row in profit_or_lost_result.iterrows():
         # 각 행마다 상세 보기 버튼을 추가
