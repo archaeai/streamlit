@@ -87,9 +87,10 @@ if __name__ == '__main__':
     response = AgGrid(
         profit_or_lost_result,
         gridOptions=gridOptions,
+        # 크기에 맞출건지 스크롤바를 줄건지 결정
         fit_columns_on_grid_load=False,
         height=300,
-        width='100%',
+        width='200%',
         enable_enterprise_modules=True
     )
 
