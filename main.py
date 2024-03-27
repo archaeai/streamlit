@@ -54,8 +54,11 @@ def aggregate_results(group):
 def get_user_filtered_results(df, user_id):
     """선택된 사용자의 데이터를 필터링하고 결과를 반환하는 함수."""
     filtered_df = df[df['user_id'] == user_id]
+    start_timestamp = filtered_df['timestamp'].min()
+    end_timestamp = filtered_df['timestamp'].max()
     results = filtered_df.groupby('order_id').apply(aggregate_results, include_groups=False).reset_index()
-    return results[(results["profit_loss"] == "loss") | (results["profit_loss"] == "profit")]
+    pnl = results[(results["profit_loss"] == "loss") | (results["profit_loss"] == "profit")]
+    return pnl, start_timestamp, end_timestamp
 
 
 if __name__ == '__main__':
@@ -67,19 +70,14 @@ if __name__ == '__main__':
     # 유저 리스트 가져오기
     user_list = df['user_id'].unique()
     selected_user = st.selectbox('유저 선택:', user_list)
-
-    # 시간 가져오기
-    start_timestamp = df['timestamp'].min()
-    end_timestamp = df['timestamp'].max()
+    # dateframe 가져오기
+    profit_or_lost_result, start_timestamp, end_timestamp = get_user_filtered_results(df, selected_user)
 
     # 분단위 까지만
     formatted_start = start_timestamp.strftime('%Y-%m-%d %H:%M')
     formatted_end = end_timestamp.strftime('%Y-%m-%d %H:%M')
+
     st.write(f"{selected_user} 데이터 시간 범위: {formatted_start} 부터 {formatted_end} 까지")
-
-    # dateframe 가져오기
-    profit_or_lost_result = get_user_filtered_results(df, selected_user)
-
     # 인덱스를 1부터 시작하도록 조정
     profit_or_lost_result.index = np.arange(1, len(profit_or_lost_result) + 1)
 
