@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+from st_aggrid import GridOptionsBuilder, AgGrid
 
 
 def load_and_preprocess_data(filepath):
@@ -76,24 +77,26 @@ if __name__ == '__main__':
     # dateframe 가져오기
     profit_or_lost_result, filtered_by_user, start_timestamp, end_timestamp = get_user_filtered_results(df, selected_user)
 
-    # 분단위 까지만
-    formatted_start = start_timestamp.strftime('%Y-%m-%d %H:%M')
-    formatted_end = end_timestamp.strftime('%Y-%m-%d %H:%M')
-    st.write(f"{selected_user} 데이터 시간 범위: {formatted_start} 부터 {formatted_end} 까지")
+    # AgGrid 설정
+    gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result)
+    gb.configure_pagination()
+    gb.configure_selection('single', use_checkbox=True)
+    gridOptions = gb.build()
 
-    # 인덱스를 1부터 시작하도록 조정
-    profit_or_lost_result.index = np.arange(1, len(profit_or_lost_result) + 1)
-    st.dataframe(profit_or_lost_result)
-    # profit_or_lost_result 표시
-    for index, row in profit_or_lost_result.iterrows():
-        # 각 행마다 상세 보기 버튼을 추가
-        if st.button(f"상세 보기 {index}", key=row['order_id']):
-            # 버튼이 클릭되면 해당 orderId의 상세 정보를 표시
-            st.session_state['selected_orderId'] = row['order_id']
+    # AgGrid 테이블 표시
+    response = AgGrid(
+        profit_or_lost_result,
+        gridOptions=gridOptions,
+        fit_columns_on_grid_load=True,
+        height=300,
+        width='100%',
+        enable_enterprise_modules=True
+    )
 
-    # 세션 상태에 선택된 orderId가 있으면 해당 데이터를 표시
-    if 'selected_orderId' in st.session_state:
-        st.write(f"orderId {st.session_state['selected_orderId']}에 대한 상세 정보:")
-        # 해당 orderId로 필터링
-        details = filtered_by_user[filtered_by_user['order_id'] == st.session_state['selected_orderId']]
-        st.dataframe(details)
+    # 선택된 행 처리
+    selected = response['selected_rows']
+    if selected:
+        selected_order_id = selected[0]['order_id']
+        filtered_details = filtered_by_user[filtered_by_user['order_id'] == selected_order_id]
+        st.write(f"Details for order_id: {selected_order_id}")
+        st.dataframe(filtered_details)
