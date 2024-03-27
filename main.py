@@ -84,10 +84,9 @@ if __name__ == '__main__':
     # 인덱스를 1부터 시작하도록 조정
     profit_or_lost_result.index = np.arange(1, len(profit_or_lost_result) + 1)
 
-    # orderId 리스트
-    selected_orderId = st.selectbox('orderId 선택:', profit_or_lost_result['order_id'].unique())
-
-    # orderId 기준 필터링
-    # 이제 DataFrame을 Streamlit에 표시
+    # profit_or_lost_result 표시
     st.dataframe(profit_or_lost_result, use_container_width=True)
+
+    # detail 조회 추가
+    selected_orderId = st.selectbox('orderId 선택:', profit_or_lost_result['order_id'].unique())
     st.dataframe(filtered_by_user[filtered_by_user['order_id'] == selected_orderId])
