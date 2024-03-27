@@ -76,9 +76,9 @@ if __name__ == '__main__':
     selected_user = st.selectbox('유저 선택:', user_list)
     # dateframe 가져오기
     profit_or_lost_result, filtered_by_user, start_timestamp, end_timestamp = get_user_filtered_results(df, selected_user)
-    columns_to_include = [col for col in profit_or_lost_result.columns if col != 'order_id']
+
     # AgGrid 설정
-    gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result, include_columns=columns_to_include)
+    gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result)
     gb.configure_pagination()
     gb.configure_selection('single', use_checkbox=True)
     gridOptions = gb.build()
