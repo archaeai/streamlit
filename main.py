@@ -87,7 +87,7 @@ if __name__ == '__main__':
     response = AgGrid(
         profit_or_lost_result,
         gridOptions=gridOptions,
-        fit_columns_on_grid_load=True,
+        fit_columns_on_grid_load=False,
         height=300,
         width='100%',
         enable_enterprise_modules=True
