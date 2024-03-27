@@ -85,8 +85,15 @@ if __name__ == '__main__':
     profit_or_lost_result.index = np.arange(1, len(profit_or_lost_result) + 1)
 
     # profit_or_lost_result 표시
-    st.dataframe(profit_or_lost_result, use_container_width=True)
+    for index, row in profit_or_lost_result.iterrows():
+        # 각 행마다 상세 보기 버튼을 추가
+        if st.button(f"상세 보기 {index}", key=row['order_id']):
+            # 버튼이 클릭되면 해당 orderId의 상세 정보를 표시
+            st.session_state['selected_orderId'] = row['order_id']
 
-    # detail 조회 추가
-    selected_orderId = st.selectbox('orderId 선택:', profit_or_lost_result['order_id'].unique())
-    st.dataframe(filtered_by_user[filtered_by_user['order_id'] == selected_orderId])
+    # 세션 상태에 선택된 orderId가 있으면 해당 데이터를 표시
+    if 'selected_orderId' in st.session_state:
+        st.write(f"orderId {st.session_state['selected_orderId']}에 대한 상세 정보:")
+        # 해당 orderId로 필터링
+        details = filtered_by_user[filtered_by_user['order_id'] == st.session_state['selected_orderId']]
+        st.dataframe(details)
