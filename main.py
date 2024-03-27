@@ -45,7 +45,6 @@ def aggregate_results(group):
         'symbol': group['symbol'].iloc[0],  # 첫 번째 symbol 값
         'position': group['position'].iloc[0],  # 첫 번째 position 값
         'profit_loss': determine_profit_loss(group),
-        'pnl_qty': group['quantity'].iloc[-1],
         'split_open_water': split_order_analysis(group, 'open', 'water'),
         'split_close_water': split_order_analysis(group, 'close', 'water'),
         'split_open_bull': split_order_analysis(group, 'open', 'bull'),
@@ -56,11 +55,13 @@ def aggregate_results(group):
 def get_user_filtered_results(df, user_id):
     """선택된 사용자의 데이터를 필터링하고 결과를 반환하는 함수."""
     filtered_df = df[df['user_id'] == user_id]
-    start_timestamp = filtered_df['timestamp'].min()
-    end_timestamp = filtered_df['timestamp'].max()
+    filtered_df = filtered_df.sort_values(by='timestamp', ascending=True)
+    start_time = filtered_df['timestamp'].min()
+    end_time = filtered_df['timestamp'].max()
     results = filtered_df.groupby('order_id').apply(aggregate_results, include_groups=False).reset_index()
     pnl = results[(results["profit_loss"] == "loss") | (results["profit_loss"] == "profit")]
-    return pnl, start_timestamp, end_timestamp
+    pnl_sorted = pnl.sort_values('entry_time', ascending=True)
+    return pnl_sorted, filtered_df, start_time, end_time
 
 
 if __name__ == '__main__':
@@ -73,18 +74,20 @@ if __name__ == '__main__':
     user_list = df['user_id'].unique()
     selected_user = st.selectbox('유저 선택:', user_list)
     # dateframe 가져오기
-    profit_or_lost_result, start_timestamp, end_timestamp = get_user_filtered_results(df, selected_user)
+    profit_or_lost_result, filtered_by_user, start_timestamp, end_timestamp = get_user_filtered_results(df, selected_user)
 
     # 분단위 까지만
     formatted_start = start_timestamp.strftime('%Y-%m-%d %H:%M')
     formatted_end = end_timestamp.strftime('%Y-%m-%d %H:%M')
-
     st.write(f"{selected_user} 데이터 시간 범위: {formatted_start} 부터 {formatted_end} 까지")
+
     # 인덱스를 1부터 시작하도록 조정
     profit_or_lost_result.index = np.arange(1, len(profit_or_lost_result) + 1)
 
-    # 'order_id' 컬럼 제거
-    profit_or_lost_result = profit_or_lost_result.drop(columns=['order_id'])
+    # orderId 리스트
+    selected_orderId = st.selectbox('orderId 선택:', profit_or_lost_result['orderId'].unique())
 
+    # orderId 기준 필터링
     # 이제 DataFrame을 Streamlit에 표시
     st.dataframe(profit_or_lost_result, use_container_width=True)
+    st.dataframe(filtered_by_user[filtered_by_user['orderId'] == selected_orderId])
