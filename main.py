@@ -74,8 +74,11 @@ if __name__ == '__main__':
     # 유저 리스트 가져오기
     user_list = df['user_id'].unique()
     selected_user = st.selectbox('유저 선택:', user_list)
+
+    st.write(f" {st.balloons}order id 옆에 체크박스를 클릭하면, 세부 정보를 볼 수 있습니다.")
     # dateframe 가져오기
-    profit_or_lost_result, filtered_by_user, start_timestamp, end_timestamp = get_user_filtered_results(df, selected_user)
+    profit_or_lost_result, filtered_by_user, start_timestamp, end_timestamp = get_user_filtered_results(df,
+                                                                                                        selected_user)
 
     # AgGrid 설정
     gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result)
@@ -89,11 +92,10 @@ if __name__ == '__main__':
         gridOptions=gridOptions,
         # 크기에 맞출건지 스크롤바를 줄건지 결정
         fit_columns_on_grid_load=False,
-        height=300,
+        height=450,
         width='100%',
         enable_enterprise_modules=True
     )
-    st.dataframe(profit_or_lost_result)
     # 선택된 행 처리
     selected = response['selected_rows']
     if selected:
