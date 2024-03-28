@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
     # AgGrid 설정
     gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result)
-    gb.configure_pagination()
+    gb.configure_pagination(paginationAutoPageSize=False, paginationPageSize=100)
     gb.configure_selection('single', use_checkbox=True)
     gridOptions = gb.build()
 
