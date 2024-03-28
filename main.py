@@ -93,7 +93,7 @@ if __name__ == '__main__':
         width='100%',
         enable_enterprise_modules=True
     )
-
+    st.dataframe(profit_or_lost_result)
     # 선택된 행 처리
     selected = response['selected_rows']
     if selected:
