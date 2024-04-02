@@ -70,7 +70,7 @@ if __name__ == '__main__':
     # Initialize connection.
     conn = st.connection('mysql', type='sql')
     # Perform query. 캐쉬 10분 설정 로직.
-    df = conn.query('SELECT * from trade_logs;', ttl=0)
+    df = conn.query('SELECT * from trade_logs;', ttl=3000)
 
     # 유저 리스트 가져오기
     user_list = df['user_id'].unique()
@@ -101,6 +101,10 @@ if __name__ == '__main__':
     )
     # 선택된 행 처리
     selected = response['selected_rows']
+    st.write(response)
+    st.write(f"test1")
+    filtered_details = filtered_by_user[filtered_by_user['order_id'] == "1006613292"]
+    st.dataframe(filtered_details)
     if selected:
         print(selected)
         st.write(f"test1")
