@@ -67,39 +67,50 @@ def get_user_filtered_results(df, user_id):
 
 if __name__ == '__main__':
     st.title('Bot 2 청산된 주문 분석')
+    #
+    # # 데이터 로드 및 전처리
+    # json_file_path = 'test.json'
+    # df = load_and_preprocess_data(json_file_path)
+    # # 유저 리스트 가져오기
+    # user_list = df['user_id'].unique()
+    # selected_user = st.selectbox('유저 선택:', user_list)
+    #
+    # st.write(f" order id 옆에 체크박스를 클릭하면, 세부 정보를 볼 수 있습니다.")
+    # # dateframe 가져오기
+    # profit_or_lost_result, filtered_by_user, start_timestamp, end_timestamp = get_user_filtered_results(df,
+    #                                                                                                     selected_user)
+    #
+    # # AgGrid 설정
+    # gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result)
+    # gb.configure_pagination(paginationAutoPageSize=False, paginationPageSize=100)
+    # gb.configure_selection('single', use_checkbox=True)
+    # gridOptions = gb.build()
+    #
+    # # AgGrid 테이블 표시
+    # response = AgGrid(
+    #     profit_or_lost_result,
+    #     gridOptions=gridOptions,
+    #     # 크기에 맞출건지 스크롤바를 줄건지 결정
+    #     fit_columns_on_grid_load=False,
+    #     height=450,
+    #     width='100%',
+    #     enable_enterprise_modules=True
+    # )
+    # # 선택된 행 처리
+    # selected = response['selected_rows']
+    # if selected:
+    #     selected_order_id = selected[0]['order_id']
+    #     filtered_details = filtered_by_user[filtered_by_user['order_id'] == selected_order_id]
+    #     st.write(f"Details for order_id: {selected_order_id}")
+    #     st.dataframe(filtered_details)
+    import streamlit as st
 
-    # 데이터 로드 및 전처리
-    json_file_path = 'test.json'
-    df = load_and_preprocess_data(json_file_path)
-    # 유저 리스트 가져오기
-    user_list = df['user_id'].unique()
-    selected_user = st.selectbox('유저 선택:', user_list)
+    # Initialize connection.
+    conn = st.connection('mysql', type='sql')
 
-    st.write(f" order id 옆에 체크박스를 클릭하면, 세부 정보를 볼 수 있습니다.")
-    # dateframe 가져오기
-    profit_or_lost_result, filtered_by_user, start_timestamp, end_timestamp = get_user_filtered_results(df,
-                                                                                                        selected_user)
+    # Perform query.
+    df = conn.query('SELECT * from log_db;', ttl=600)
 
-    # AgGrid 설정
-    gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result)
-    gb.configure_pagination(paginationAutoPageSize=False, paginationPageSize=100)
-    gb.configure_selection('single', use_checkbox=True)
-    gridOptions = gb.build()
-
-    # AgGrid 테이블 표시
-    response = AgGrid(
-        profit_or_lost_result,
-        gridOptions=gridOptions,
-        # 크기에 맞출건지 스크롤바를 줄건지 결정
-        fit_columns_on_grid_load=False,
-        height=450,
-        width='100%',
-        enable_enterprise_modules=True
-    )
-    # 선택된 행 처리
-    selected = response['selected_rows']
-    if selected:
-        selected_order_id = selected[0]['order_id']
-        filtered_details = filtered_by_user[filtered_by_user['order_id'] == selected_order_id]
-        st.write(f"Details for order_id: {selected_order_id}")
-        st.dataframe(filtered_details)
+    # Print results.
+    for row in df.itertuples():
+        st.write(f"{row.name} has a :{row.pet}:")
