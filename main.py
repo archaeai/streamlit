@@ -70,8 +70,8 @@ if __name__ == '__main__':
     # Initialize connection.
     conn = st.connection('mysql', type='sql')
     # Perform query. 캐쉬 10분 설정 로직.
-    df = conn.query('SELECT * from trade_logs;')
-#ttl=3000
+    df = conn.query('SELECT * from trade_logs;', ttl=3000)
+
     # 유저 리스트 가져오기
     user_list = df['user_id'].unique()
     selected_user = st.selectbox('유저 선택:', user_list)
@@ -81,11 +81,11 @@ if __name__ == '__main__':
     # dateframe 가져오기
     profit_or_lost_result, filtered_by_user, start_timestamp, end_timestamp = get_user_filtered_results(df,
                                                                                                         selected_user)
+    st.dataframe(profit_or_lost_result)
 
-
-    # AgGrid 설정
-    gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result)
-    gb.configure_pagination(paginationAutoPageSize=False, paginationPageSize=100)
+    # AgGrid 설정에 include_columns 사용
+    gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result, include_columns=columns_to_include)
+    gb.configure_pagination()
     gb.configure_selection('single', use_checkbox=True)
     gridOptions = gb.build()
 
@@ -93,26 +93,13 @@ if __name__ == '__main__':
     response = AgGrid(
         profit_or_lost_result,
         gridOptions=gridOptions,
-        # 크기에 맞출건지 스크롤바를 줄건지 결정
         fit_columns_on_grid_load=False,
-        height=450,
+        height=300,
         width='100%',
         enable_enterprise_modules=True
     )
-    # 선택된 행 처리
+
     selected = response['selected_rows']
     st.write(response['selected_rows'])
-    st.write(f"test1")
-    filtered_details = filtered_by_user[filtered_by_user['order_id'] == "1006613292"]
-    st.dataframe(filtered_details)
-    if selected:
-        print(selected)
-        st.write(f"test1")
-        filtered_details = filtered_by_user[filtered_by_user['order_id'] == "1006613292"]
-        st.dataframe(filtered_details)
 
-        selected_order_id = selected[0]['order_id']
-        filtered_details = filtered_by_user[filtered_by_user['order_id'] == selected_order_id]
-        st.write(f"Details for order_id: {selected_order_id}")
-        st.dataframe(filtered_details)
 
