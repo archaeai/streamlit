@@ -111,4 +111,4 @@ if __name__ == '__main__':
     # Perform query. 캐쉬 10분 설정 로직.
     df = conn.query('SELECT * from trade_logs;', ttl=3000)
 
-    st.dataframe(f"{df}")
+    st.dataframe(df)
