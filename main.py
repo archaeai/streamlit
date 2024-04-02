@@ -82,7 +82,7 @@ if __name__ == '__main__':
     profit_or_lost_result, filtered_by_user, start_timestamp, end_timestamp = get_user_filtered_results(df,
                                                                                                         selected_user)
     st.write("test")
-    filtered_details = filtered_by_user[filtered_by_user['order_id'] == 1006613292]
+    filtered_details = filtered_by_user[filtered_by_user['order_id'] == "1006613292"]
     st.dataframe(filtered_details)
 
     # AgGrid 설정
