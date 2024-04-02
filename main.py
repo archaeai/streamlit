@@ -84,7 +84,7 @@ if __name__ == '__main__':
     st.dataframe(profit_or_lost_result)
 
     # AgGrid 설정에 include_columns 사용
-    gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result, include_columns=columns_to_include)
+    gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result)
     gb.configure_pagination()
     gb.configure_selection('single', use_checkbox=True)
     gridOptions = gb.build()
