@@ -70,7 +70,7 @@ if __name__ == '__main__':
     # Initialize connection.
     conn = st.connection('mysql', type='sql')
     # Perform query. 캐쉬 10분 설정 로직.
-    df = conn.query('SELECT * from trade_logs;', ttl=3000)
+    df = conn.query('SELECT * from trade_logs;', ttl=0)
 
     # 유저 리스트 가져오기
     user_list = df['user_id'].unique()
