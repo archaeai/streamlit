@@ -82,6 +82,7 @@ if __name__ == '__main__':
     profit_or_lost_result, filtered_by_user, start_timestamp, end_timestamp = get_user_filtered_results(df,
                                                                                                         selected_user)
 
+
     # AgGrid 설정
     gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result)
     gb.configure_pagination(paginationAutoPageSize=False, paginationPageSize=100)
@@ -101,8 +102,13 @@ if __name__ == '__main__':
     # 선택된 행 처리
     selected = response['selected_rows']
     if selected:
+        print(selected)
+        st.write(f"test1")
+        filtered_details = filtered_by_user[filtered_by_user['order_id'] == "1006613292"]
+        st.dataframe(filtered_details)
+
         selected_order_id = selected[0]['order_id']
-        filtered_details = filtered_by_user[filtered_by_user['order_id'] == str(selected_order_id)]
+        filtered_details = filtered_by_user[filtered_by_user['order_id'] == selected_order_id]
         st.write(f"Details for order_id: {selected_order_id}")
         st.dataframe(filtered_details)
 
