@@ -113,4 +113,4 @@ if __name__ == '__main__':
 
     # Print results.
     for row in df.itertuples():
-        st.write(f"{row.name} has a :{row.pet}:")
+        st.write(f"{row}")
