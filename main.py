@@ -81,7 +81,8 @@ if __name__ == '__main__':
     # dateframe 가져오기
     profit_or_lost_result, filtered_by_user, start_timestamp, end_timestamp = get_user_filtered_results(df,
                                                                                                         selected_user)
-
+    st.write("test")
+    st.dataframe(filtered_by_user)
     # AgGrid 설정
     gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result)
     gb.configure_pagination(paginationAutoPageSize=False, paginationPageSize=100)
