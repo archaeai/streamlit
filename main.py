@@ -108,7 +108,7 @@ if __name__ == '__main__':
     # Initialize connection.
     conn = st.connection('mysql', type='sql')
 
-    # Perform query.
+    # Perform query. 캐쉬 10분 설정 로직.
     df = conn.query('SELECT * from log_db;', ttl=600)
 
     # Print results.

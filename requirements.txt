@@ -2,5 +2,5 @@ streamlit~=1.32.2
 pandas~=2.2.1
 numpy~=1.26.4
 streamlit-aggrid
-mysqlclient
-SQLAlchemy
+mysqlclient~=2.2.4
+SQLAlchemy~= 2.0.29
