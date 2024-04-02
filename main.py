@@ -91,6 +91,7 @@ if __name__ == '__main__':
 
     # AgGrid 테이블 표시
     response = AgGrid(
+
         profit_or_lost_result,
         gridOptions=gridOptions,
         fit_columns_on_grid_load=False,
