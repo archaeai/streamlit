@@ -81,7 +81,6 @@ if __name__ == '__main__':
     # dateframe 가져오기
     profit_or_lost_result, filtered_by_user, start_timestamp, end_timestamp = get_user_filtered_results(df,
                                                                                                         selected_user)
-    st.dataframe(profit_or_lost_result)
 
     # AgGrid 설정에 include_columns 사용
     gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result)
@@ -91,7 +90,7 @@ if __name__ == '__main__':
 
     # AgGrid 테이블 표시
     response = AgGrid(
-        
+
         profit_or_lost_result,
         gridOptions=gridOptions,
         fit_columns_on_grid_load=False,
@@ -101,6 +100,10 @@ if __name__ == '__main__':
     )
 
     selected = response['selected_rows']
-    st.write(response['selected_rows'])
+
+    if selected:
+        selected_order_ids = [row['order_id'] for row in selected]
+        selected_orders = filtered_by_user[filtered_by_user['order_id'].isin(selected_order_ids)]
+        st.write(selected_orders)
 
 
