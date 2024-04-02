@@ -101,7 +101,7 @@ if __name__ == '__main__':
     )
     # 선택된 행 처리
     selected = response['selected_rows']
-    st.write(response)
+    st.write(response['selected_rows'])
     st.write(f"test1")
     filtered_details = filtered_by_user[filtered_by_user['order_id'] == "1006613292"]
     st.dataframe(filtered_details)
