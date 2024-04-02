@@ -85,13 +85,13 @@ if __name__ == '__main__':
 
     # AgGrid 설정에 include_columns 사용
     gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result)
-    gb.configure_pagination()
+    gb.configure_pagination(paginationPageSize=100)
     gb.configure_selection('single', use_checkbox=True)
     gridOptions = gb.build()
 
     # AgGrid 테이블 표시
     response = AgGrid(
-
+        
         profit_or_lost_result,
         gridOptions=gridOptions,
         fit_columns_on_grid_load=False,
