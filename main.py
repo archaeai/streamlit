@@ -84,7 +84,7 @@ if __name__ == '__main__':
     st.write(f" len 은 {len(profit_or_lost_result)}")
     # AgGrid 설정에 include_columns 사용
     gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result)
-    gb.configure_pagination(paginationPageSize=100, enabled=True, paginationAutoPageSize=True)
+    gb.configure_pagination(enabled=True, paginationAutoPageSize=True)
     gb.configure_selection('single', use_checkbox=True)
     gridOptions = gb.build()
 
@@ -94,7 +94,7 @@ if __name__ == '__main__':
         profit_or_lost_result,
         gridOptions=gridOptions,
         fit_columns_on_grid_load=False,
-        height=300,
+        height=450,
         width='100%',
         enable_enterprise_modules=True
     )
