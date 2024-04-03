@@ -78,13 +78,13 @@ def get_winrate(_df):
     split_bull_close_sum = _df.get('split_close_bull', pd.Series([0])).sum()
 
     if split_water_open_sum > 0:
-        split_water_win_rate = round((split_water_close_sum / (split_water_open_sum + split_water_close_sum)), 2)
+        split_water_win_rate = round((split_water_close_sum / (split_water_open_sum + split_water_close_sum) * 100), 2)
     else:
         split_water_open_sum = 0
         split_water_win_rate = 0
 
     if split_bull_open_sum > 0:
-        split_bull_win_rate = round((split_bull_close_sum / (split_bull_open_sum + split_bull_close_sum)), 2)
+        split_bull_win_rate = round((split_bull_close_sum / (split_bull_open_sum + split_bull_close_sum) * 100), 2)
     else:
         split_bull_open_sum = 0
         split_bull_win_rate = 0
