@@ -61,9 +61,11 @@ def get_user_filtered_results(df, user_id, _start_date, _end_date):
     filtered_df['timestamp'] = pd.to_datetime(filtered_df['timestamp'])
     filtered_df = filtered_df[(filtered_df['timestamp'] >= pd.to_datetime(_start_date)) &
                               (filtered_df['timestamp'] <= pd.to_datetime(_end_date))]
+
+    if filtered_df.empty:
+        return pd.DataFrame(), pd.DataFrame() 
+
     filtered_df = filtered_df.sort_values(by='timestamp', ascending=True)
-    start_time = filtered_df['timestamp'].min()
-    end_time = filtered_df['timestamp'].max()
     results = filtered_df.groupby('order_id').apply(aggregate_results, include_groups=False).reset_index()
     pnl = results[(results["profit_loss"] == "loss") | (results["profit_loss"] == "profit")]
     pnl_sorted = pnl.sort_values('entry_time', ascending=True)
@@ -117,13 +119,14 @@ if __name__ == '__main__':
     # dateframe 가져오기
     profit_or_lost_result, filtered_by_user = get_user_filtered_results(df, selected_user, start_date, end_date)
     # 승률 보기
-    (win_rate, split_water_win_rate, split_bull_win_rate, total_num, win_count, split_water_open_sum,
-     split_water_close_sum, split_bull_open_sum, split_bull_close_sum) = get_winrate(profit_or_lost_result)
-    st.write(f"💲청산 주문 : {total_num} 😊익절 주문 : {win_count} 😅손절 주문 : {total_num - win_count} ")
-    st.write(f"💧물타기 주문 : {split_water_open_sum} 💧물타기 익절 : {split_water_close_sum} ")
-    st.write(f"🔥불타기 주문 : {split_bull_open_sum} 🔥불타기 익절 : {split_bull_close_sum} ")
-    st.write(f"📢 승률 : {win_rate}%, 💧물타기 승률 : {split_water_win_rate}% "
-             f", 🔥불타기 승률 : {split_bull_win_rate} ")
+    if not profit_or_lost_result.empty:
+        (win_rate, split_water_win_rate, split_bull_win_rate, total_num, win_count, split_water_open_sum,
+         split_water_close_sum, split_bull_open_sum, split_bull_close_sum) = get_winrate(profit_or_lost_result)
+        st.write(f"💲청산 주문 : {total_num} 😊익절 주문 : {win_count} 😅손절 주문 : {total_num - win_count} ")
+        st.write(f"💧물타기 주문 : {split_water_open_sum} 💧물타기 익절 : {split_water_close_sum} ")
+        st.write(f"🔥불타기 주문 : {split_bull_open_sum} 🔥불타기 익절 : {split_bull_close_sum} ")
+        st.write(f"📢 승률 : {win_rate}%, 💧물타기 승률 : {split_water_win_rate}% "
+                 f", 🔥불타기 승률 : {split_bull_win_rate} ")
 
     # AgGrid 설정에 include_columns 사용
     gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result)
