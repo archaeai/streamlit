@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 import streamlit as st
 import pandas as pd
@@ -101,8 +101,8 @@ def get_winrate(_df):
 if __name__ == '__main__':
     st.title('청산된 주문 분석')
     st.sidebar.title("시간 필터")
-    start_date = st.sidebar.date_input("시작 날짜", datetime.now())
-    end_date = st.sidebar.date_input("종료 날짜", datetime.now())
+    start_date = st.sidebar.date_input("시작 날짜", datetime.datetime.now() - datetime.timedelta(days=2))
+    end_date = st.sidebar.date_input("종료 날짜", datetime.datetime.now())
     # Initialize connection.
     conn = st.connection('mysql', type='sql')
     # Perform query. 캐쉬 10분 설정 로직.
