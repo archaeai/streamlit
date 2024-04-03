@@ -64,35 +64,36 @@ def get_user_filtered_results(df, user_id):
     pnl_sorted = pnl.sort_values('entry_time', ascending=True)
     return pnl_sorted, filtered_df, start_time, end_time
 
-#
-# def get_winrate(_df):
-#     total_num = len(df)
-#     win_count = _df['profit_loss'].value_counts().get("profit")
-#     win_rate = round((win_count / total_num * 100), 2)
-#
-#     split_water_open_sum = df['split_open_water'].sum()
-#     split_water_close_sum = df['split_close_water'].sum()
-#
-#     split_bull_open_sum = df['split_open_bull'].sum()
-#     split_bull_close_sum = df['split_close_bull'].sum()
-#
-#     if split_water_open_sum > 0:
-#         split_water_win_rate = round((split_water_close_sum / (split_water_open_sum + split_water_close_sum)), 2)
-#     else:
-#         split_water_open_sum = 0
-#         split_water_win_rate = 0
-#
-#     if split_bull_open_sum > 0:
-#         split_bull_win_rate = round((split_bull_close_sum / (split_bull_open_sum + split_bull_close_sum)), 2)
-#     else:
-#         split_bull_open_sum = 0
-#         split_bull_win_rate = 0
-#
-#     detail_str = (f"청산된 주문 개수 : {total_num} 익절 개수 : {win_count} 손절 개수: {total_num - win_count}\n "
-#                   f"스플릿 water open 개수 : {split_water_open_sum}, close 개수 : {split_water_close_sum} \n"
-#                   f"스플릿 bull open 개수 : {split_bull_open_sum}, close 개수 : {split_bull_close_sum} \n")
-#
-#     return win_rate, split_water_win_rate, split_bull_win_rate, detail_str
+
+def get_winrate(_df):
+    total_num = len(_df)
+    win_count = _df['profit_loss'].value_counts().get("profit")
+    win_rate = round((win_count / total_num * 100), 2)
+
+    # df 대신 _df 사용
+    split_water_open_sum = _df.get('split_open_water', pd.Series([0])).sum()
+    split_water_close_sum = _df.get('split_close_water', pd.Series([0])).sum()
+
+    split_bull_open_sum = _df.get('split_open_bull', pd.Series([0])).sum()
+    split_bull_close_sum = _df.get('split_close_bull', pd.Series([0])).sum()
+
+    if split_water_open_sum > 0:
+        split_water_win_rate = round((split_water_close_sum / (split_water_open_sum + split_water_close_sum)), 2)
+    else:
+        split_water_open_sum = 0
+        split_water_win_rate = 0
+
+    if split_bull_open_sum > 0:
+        split_bull_win_rate = round((split_bull_close_sum / (split_bull_open_sum + split_bull_close_sum)), 2)
+    else:
+        split_bull_open_sum = 0
+        split_bull_win_rate = 0
+
+    detail_str = (f"청산된 주문 개수 : {total_num} 익절 개수 : {win_count} 손절 개수: {total_num - win_count}\n "
+                  f"스플릿 water open 개수 : {split_water_open_sum}, close 개수 : {split_water_close_sum} \n"
+                  f"스플릿 bull open 개수 : {split_bull_open_sum}, close 개수 : {split_bull_close_sum} \n")
+
+    return win_rate, split_water_win_rate, split_bull_win_rate, detail_str
 
 
 if __name__ == '__main__':
@@ -112,13 +113,11 @@ if __name__ == '__main__':
     profit_or_lost_result, filtered_by_user, start_timestamp, end_timestamp = get_user_filtered_results(df,
                                                                                                         selected_user)
 
-    # # 승률 보기
-    # win_rate, split_water_win_rate, split_bull_win_rate, detail_str = get_winrate(profit_or_lost_result)
-    # st.write(detail_str)
-    # st.write(f"winrate : {win_rate}, split_water_win_rate {split_water_win_rate} "
-    #          f",split_bull_win_rate {split_bull_win_rate} ")
-
-    st.write(profit_or_lost_result.columns)
+    # 승률 보기
+    win_rate, split_water_win_rate, split_bull_win_rate, detail_str = get_winrate(profit_or_lost_result)
+    st.write(detail_str)
+    st.write(f"winrate : {win_rate}, split_water_win_rate {split_water_win_rate} "
+             f",split_bull_win_rate {split_bull_win_rate} ")
 
     # AgGrid 설정에 include_columns 사용
     gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result)
