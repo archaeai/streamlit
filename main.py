@@ -89,11 +89,8 @@ def get_winrate(_df):
         split_bull_open_sum = 0
         split_bull_win_rate = 0
 
-    detail_str = (f"청산된 주문 개수 : {total_num} 익절 개수 : {win_count} 손절 개수: {total_num - win_count}\n "
-                  f"스플릿 water open 개수 : {split_water_open_sum}, close 개수 : {split_water_close_sum} \n"
-                  f"스플릿 bull open 개수 : {split_bull_open_sum}, close 개수 : {split_bull_close_sum} \n")
-
-    return win_rate, split_water_win_rate, split_bull_win_rate, detail_str
+    return (win_rate, split_water_win_rate, split_bull_win_rate, total_num, win_count, split_water_open_sum,
+            split_water_close_sum, split_bull_open_sum, split_bull_close_sum)
 
 
 if __name__ == '__main__':
@@ -114,8 +111,11 @@ if __name__ == '__main__':
                                                                                                         selected_user)
 
     # 승률 보기
-    win_rate, split_water_win_rate, split_bull_win_rate, detail_str = get_winrate(profit_or_lost_result)
-    st.write(detail_str)
+    (win_rate, split_water_win_rate, split_bull_win_rate, total_num, win_count, split_water_open_sum,
+     split_water_close_sum, split_bull_open_sum, split_bull_close_sum) = get_winrate(profit_or_lost_result)
+    st.write(f"💲청산 주문 : {total_num} 😊익절 주문 : {win_count} 😅손절 주문 : {total_num - win_count} ")
+    st.write(f"💧물타기 주문 : {split_water_open_sum} 💧물타기 익절 : {split_water_close_sum} ")
+    st.write(f"🔥불타기 주문 : {split_bull_open_sum} 🔥불타기 익절 : {split_bull_close_sum} ")
     st.write(f"📢 승률 : {win_rate}%, 💧물타기 승률 : {split_water_win_rate}% "
              f", 🔥불타기 승률 : {split_bull_win_rate} ")
 
