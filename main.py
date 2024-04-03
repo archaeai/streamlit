@@ -116,7 +116,7 @@ if __name__ == '__main__':
     user_list = df['user_id'].unique()
     selected_user = st.selectbox('유저 선택:', user_list)
 
-    st.write(f" order id 옆에 체크박스를 클릭하면, 세부 정보를 볼 수 있습니다.")
+    st.write(f" ❗ order id 옆에 체크박스를 클릭하면, 세부 정보를 볼 수 있습니다.")
 
     # dateframe 가져오기
     profit_or_lost_result, filtered_by_user = get_user_filtered_results(df, selected_user, start_date, end_date)
