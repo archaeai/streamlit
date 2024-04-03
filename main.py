@@ -59,8 +59,8 @@ def get_user_filtered_results(df, user_id, _start_date, _end_date):
     """선택된 사용자의 데이터를 필터링하고 결과를 반환하는 함수."""
     filtered_df = df[df['user_id'] == user_id]
     # 날짜 필터 적용
-    filtered_df = filtered_df[(filtered_df['timestamp'] >= pd.to_datetime(_start_date)) &
-                              (filtered_df['timestamp'] <= pd.to_datetime(_end_date))]
+    # filtered_df = filtered_df[(filtered_df['timestamp'] >= pd.to_datetime(_start_date)) &
+    #                           (filtered_df['timestamp'] <= pd.to_datetime(_end_date))]
     filtered_df = filtered_df.sort_values(by='timestamp', ascending=True)
     start_time = filtered_df['timestamp'].min()
     end_time = filtered_df['timestamp'].max()
