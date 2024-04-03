@@ -62,7 +62,7 @@ def get_user_filtered_results(df, user_id):
     results = filtered_df.groupby('order_id').apply(aggregate_results, include_groups=False).reset_index()
     pnl = results[(results["profit_loss"] == "loss") | (results["profit_loss"] == "profit")]
     pnl_sorted = pnl.sort_values('entry_time', ascending=True)
-    return pnl_sorted, filtered_df, start_time, end_time, results
+    return pnl_sorted, filtered_df, start_time, end_time
 
 
 def get_winrate(_df):
@@ -107,9 +107,8 @@ if __name__ == '__main__':
     st.write(f" order id 옆에 체크박스를 클릭하면, 세부 정보를 볼 수 있습니다.")
 
     # dateframe 가져오기
-    profit_or_lost_result, filtered_by_user, start_timestamp, end_timestamp, results = get_user_filtered_results(df,
+    profit_or_lost_result, filtered_by_user, start_timestamp, end_timestamp = get_user_filtered_results(df,
                                                                                                         selected_user)
-    st.dataframe(results)
     # 승률 보기
     (win_rate, split_water_win_rate, split_bull_win_rate, total_num, win_count, split_water_open_sum,
      split_water_close_sum, split_bull_open_sum, split_bull_close_sum) = get_winrate(profit_or_lost_result)
