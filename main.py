@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -53,16 +55,19 @@ def aggregate_results(group):
     })
 
 
-def get_user_filtered_results(df, user_id):
+def get_user_filtered_results(df, user_id, _start_date, _end_date):
     """선택된 사용자의 데이터를 필터링하고 결과를 반환하는 함수."""
     filtered_df = df[df['user_id'] == user_id]
+    # 날짜 필터 적용
+    filtered_df = filtered_df[(filtered_df['timestamp'] >= pd.to_datetime(_start_date)) &
+                              (filtered_df['timestamp'] <= pd.to_datetime(_end_date))]
     filtered_df = filtered_df.sort_values(by='timestamp', ascending=True)
     start_time = filtered_df['timestamp'].min()
     end_time = filtered_df['timestamp'].max()
     results = filtered_df.groupby('order_id').apply(aggregate_results, include_groups=False).reset_index()
     pnl = results[(results["profit_loss"] == "loss") | (results["profit_loss"] == "profit")]
     pnl_sorted = pnl.sort_values('entry_time', ascending=True)
-    return pnl_sorted, filtered_df, start_time, end_time
+    return pnl_sorted, filtered_df
 
 
 def get_winrate(_df):
@@ -94,7 +99,10 @@ def get_winrate(_df):
 
 
 if __name__ == '__main__':
-    st.title('Bot 2 청산된 주문 분석')
+    st.title('청산된 주문 분석')
+    st.sidebar.title("시간 필터")
+    start_date = st.sidebar.date_input("시작 날짜", datetime.now())
+    end_date = st.sidebar.date_input("종료 날짜", datetime.now())
     # Initialize connection.
     conn = st.connection('mysql', type='sql')
     # Perform query. 캐쉬 10분 설정 로직.
@@ -107,8 +115,7 @@ if __name__ == '__main__':
     st.write(f" order id 옆에 체크박스를 클릭하면, 세부 정보를 볼 수 있습니다.")
 
     # dateframe 가져오기
-    profit_or_lost_result, filtered_by_user, start_timestamp, end_timestamp = get_user_filtered_results(df,
-                                                                                                        selected_user)
+    profit_or_lost_result, filtered_by_user = get_user_filtered_results(df, selected_user, start_date, end_date)
     # 승률 보기
     (win_rate, split_water_win_rate, split_bull_win_rate, total_num, win_count, split_water_open_sum,
      split_water_close_sum, split_bull_open_sum, split_bull_close_sum) = get_winrate(profit_or_lost_result)
