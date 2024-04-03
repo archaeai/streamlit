@@ -116,8 +116,8 @@ if __name__ == '__main__':
     # 승률 보기
     win_rate, split_water_win_rate, split_bull_win_rate, detail_str = get_winrate(profit_or_lost_result)
     st.write(detail_str)
-    st.write(f"winrate : {win_rate}, split_water_win_rate {split_water_win_rate} "
-             f",split_bull_win_rate {split_bull_win_rate} ")
+    st.write(f"📢 승률 : {win_rate}%, 💧물타기 승률 : {split_water_win_rate}% "
+             f", 🔥불타기 승률 : {split_bull_win_rate} ")
 
     # AgGrid 설정에 include_columns 사용
     gb = GridOptionsBuilder.from_dataframe(profit_or_lost_result)
