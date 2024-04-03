@@ -121,7 +121,6 @@ if __name__ == '__main__':
     # dateframe 가져오기
     profit_or_lost_result, filtered_by_user = get_user_filtered_results(df, selected_user, start_date, end_date)
 
-    st.dataframe(filtered_by_user)
     # 승률 보기
     if not profit_or_lost_result.empty:
         (win_rate, split_water_win_rate, split_bull_win_rate, total_num, win_count, split_water_open_sum,
