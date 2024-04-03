@@ -58,9 +58,9 @@ def aggregate_results(group):
 def get_user_filtered_results(_df, user_id, _start_date, _end_date):
     """선택된 사용자의 데이터를 필터링하고 결과를 반환하는 함수."""
     filtered_df = _df[_df['user_id'] == user_id]
-    # filtered_df.loc[:, 'timestamp'] = pd.to_datetime(filtered_df['timestamp'])
-    # filtered_df = filtered_df[(filtered_df['timestamp'] >= pd.to_datetime(_start_date)) &
-    #                           (filtered_df['timestamp'] <= pd.to_datetime(_end_date))]
+    filtered_df.loc[:, 'timestamp'] = pd.to_datetime(filtered_df['timestamp'])
+    filtered_df = filtered_df[(filtered_df['timestamp'] >= pd.to_datetime(_start_date)) &
+                              (filtered_df['timestamp'] <= pd.to_datetime(_end_date))]
 
     if filtered_df.empty:
         return filtered_df, filtered_df
@@ -118,6 +118,8 @@ if __name__ == '__main__':
 
     # dateframe 가져오기
     profit_or_lost_result, filtered_by_user = get_user_filtered_results(df, selected_user, start_date, end_date)
+
+    st.dataframe(filtered_by_user)
     # 승률 보기
     if not profit_or_lost_result.empty:
         (win_rate, split_water_win_rate, split_bull_win_rate, total_num, win_count, split_water_open_sum,
