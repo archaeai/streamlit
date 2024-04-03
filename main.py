@@ -66,31 +66,31 @@ def get_user_filtered_results(df, user_id):
 
 
 def get_winrate(_df):
-    total_num = len(_df)
-    win_count = _df['profit_loss'].value_counts().get("profit")
-    win_rate = round((win_count / total_num * 100), 2)
+    _total_num = len(_df)
+    _win_count = _df['profit_loss'].value_counts().get("profit", 0)
+    _win_rate = round((_win_count / _total_num * 100), 2) if _total_num >0 else 0
 
     # df 대신 _df 사용
-    split_water_open_sum = _df.get('split_open_water', pd.Series([0])).sum()
-    split_water_close_sum = _df.get('split_close_water', pd.Series([0])).sum()
+    _split_water_open_sum = _df.get('split_open_water', pd.Series([0])).sum()
+    _split_water_close_sum = _df.get('split_close_water', pd.Series([0])).sum()
 
-    split_bull_open_sum = _df.get('split_open_bull', pd.Series([0])).sum()
-    split_bull_close_sum = _df.get('split_close_bull', pd.Series([0])).sum()
+    _split_bull_open_sum = _df.get('split_open_bull', pd.Series([0])).sum()
+    _split_bull_close_sum = _df.get('split_close_bull', pd.Series([0])).sum()
 
-    if split_water_open_sum > 0:
-        split_water_win_rate = round((split_water_close_sum / split_water_open_sum * 100), 2)
+    if _split_water_open_sum > 0:
+        _split_water_win_rate = round((_split_water_close_sum / _split_water_open_sum * 100), 2)
     else:
-        split_water_open_sum = 0
-        split_water_win_rate = 0
+        _split_water_open_sum = 0
+        _split_water_win_rate = 0
 
-    if split_bull_open_sum > 0:
-        split_bull_win_rate = round((split_bull_close_sum / split_bull_open_sum * 100), 2)
+    if _split_bull_open_sum > 0:
+        _split_bull_win_rate = round((_split_bull_close_sum / _split_bull_open_sum * 100), 2)
     else:
-        split_bull_open_sum = 0
-        split_bull_win_rate = 0
+        _split_bull_open_sum = 0
+        _split_bull_win_rate = 0
 
-    return (win_rate, split_water_win_rate, split_bull_win_rate, total_num, win_count, split_water_open_sum,
-            split_water_close_sum, split_bull_open_sum, split_bull_close_sum)
+    return (_win_rate, _split_water_win_rate, _split_bull_win_rate, _total_num, _win_count, _split_water_open_sum,
+            _split_water_close_sum, _split_bull_open_sum, _split_bull_close_sum)
 
 
 if __name__ == '__main__':
