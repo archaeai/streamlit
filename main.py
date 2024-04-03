@@ -55,15 +55,15 @@ def aggregate_results(group):
     })
 
 
-def get_user_filtered_results(df, user_id, _start_date, _end_date):
+def get_user_filtered_results(_df, user_id, _start_date, _end_date):
     """선택된 사용자의 데이터를 필터링하고 결과를 반환하는 함수."""
-    filtered_df = df[df['user_id'] == user_id]
+    filtered_df = _df[_df['user_id'] == user_id]
     filtered_df['timestamp'] = pd.to_datetime(filtered_df['timestamp'])
     filtered_df = filtered_df[(filtered_df['timestamp'] >= pd.to_datetime(_start_date)) &
                               (filtered_df['timestamp'] <= pd.to_datetime(_end_date))]
 
     if filtered_df.empty:
-        return pd.DataFrame(), pd.DataFrame() 
+        return pd.DataFrame(), pd.DataFrame()
 
     filtered_df = filtered_df.sort_values(by='timestamp', ascending=True)
     results = filtered_df.groupby('order_id').apply(aggregate_results, include_groups=False).reset_index()
