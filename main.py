@@ -61,9 +61,6 @@ def get_user_filtered_results(df, user_id, _start_date, _end_date):
     filtered_df['timestamp'] = pd.to_datetime(filtered_df['timestamp'])
     filtered_df = filtered_df[(filtered_df['timestamp'] >= pd.to_datetime(_start_date)) &
                               (filtered_df['timestamp'] <= pd.to_datetime(_end_date))]
-
-    if filtered_df.empty:
-        return pd.DataFrame(), pd.DataFrame()
     filtered_df = filtered_df.sort_values(by='timestamp', ascending=True)
     start_time = filtered_df['timestamp'].min()
     end_time = filtered_df['timestamp'].max()
