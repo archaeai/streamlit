@@ -57,10 +57,12 @@ def aggregate_results(group):
 
 def get_user_filtered_results(_df, user_id, _start_date, _end_date):
     """선택된 사용자의 데이터를 필터링하고 결과를 반환하는 함수."""
+    _start_date_df = pd.to_datetime(_start_date)
+    _end_date_df = pd.to_datetime(_end_date) + datetime.timedelta(days=1) - datetime.timedelta(seconds=1)
     filtered_df = _df[_df['user_id'] == user_id]
     filtered_df.loc[:, 'timestamp'] = pd.to_datetime(filtered_df['timestamp'])
-    filtered_df = filtered_df[(filtered_df['timestamp'] >= pd.to_datetime(_start_date)) &
-                              (filtered_df['timestamp'] <= pd.to_datetime(_end_date))]
+    filtered_df = filtered_df[(filtered_df['timestamp'] >= _start_date_df) &
+                              (filtered_df['timestamp'] <= _end_date_df)]
 
     if filtered_df.empty:
         return filtered_df, filtered_df
