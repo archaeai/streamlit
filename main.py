@@ -109,7 +109,7 @@ if __name__ == '__main__':
     # dateframe 가져오기
     profit_or_lost_result, filtered_by_user, start_timestamp, end_timestamp = get_user_filtered_results(df,
                                                                                                         selected_user)
-
+    st.dataframe(filtered_by_user)
     # 승률 보기
     (win_rate, split_water_win_rate, split_bull_win_rate, total_num, win_count, split_water_open_sum,
      split_water_close_sum, split_bull_open_sum, split_bull_close_sum) = get_winrate(profit_or_lost_result)
